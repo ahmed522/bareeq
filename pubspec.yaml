@@ -1,0 +1,53 @@
+name: bareeq
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mqtt_client: ^10.2.1
+  bloc:
+  flutter_bloc:
+  shared_preferences:
+  flutter_svg:
+  lottie: ^3.1.2
+  flutter_joystick: ^0.2.0
+  segment_display: ^0.5.0
+  uuid: ^4.4.0
+  syncfusion_flutter_gauges: ^26.1.39
+  font_awesome_flutter: ^10.7.0
+  toggle_switch: ^2.3.0
+  flutter_rviz: ^0.0.2
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/logo.png
+    - assets/images/connect.png
+    - assets/images/error.svg
+    - assets/images/loading.svg
+    - assets/images/welcome.svg
+    - assets/images/empty.svg
+    - assets/animations/hi.json
+    - assets/animations/error.json
+    - assets/animations/loading.json
+    - assets/animations/connecting.json
+    - assets/animations/ready.json
+    - assets/animations/pulsating_dot.json
+
+  fonts:
+    - family: NERILLKID Trial
+      fonts:
+        - asset: assets/fonts/NERILLKID Trial.ttf
+    - family: Lilita One
+      fonts:
+        - asset: assets/fonts/LilitaOne-Regular.ttf

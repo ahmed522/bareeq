@@ -1,0 +1,4 @@
+enum VelocityType {
+  linearVelocity,
+  angularVelocity,
+}
