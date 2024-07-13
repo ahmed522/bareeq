@@ -14,6 +14,7 @@ class ConnectionScreenCubit extends Cubit<ConnectionScreenStates> {
   final TextEditingController portTextController = TextEditingController();
   final TextEditingController topicTextController = TextEditingController();
   MqttConnectionStatus currentAppState = MqttConnectionStatus.notConnected;
+
   late MQTTManager _manager;
 
   ConnectionScreenCubit() : super(ConnectionInitState()) {

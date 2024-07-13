@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -6,6 +7,7 @@ import 'package:bareeq/features/teleop/model/brush_operating_mode.dart';
 import 'package:bareeq/features/teleop/model/map_mode.dart';
 import 'package:bareeq/global/constants/constants.dart';
 import 'package:bareeq/global/constants/numbers.dart';
+import 'package:bareeq/global/services/mqtt/mqtt_connection_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rviz/struct/occupancy_grid.dart';
@@ -33,8 +35,22 @@ class ControlCubit extends Cubit<ControlStates> {
   bool getMap = false;
   Size? mapCanvasSize;
   _init() {
+    Stream.periodic(const Duration(seconds: 5), (_) {
+      if (!connectionCubit.isClosed &&
+          ((connectionCubit.connectionStatus !=
+                  MqttConnectionStatus.subscribed) ||
+              !connectionCubit.subscribedToAllNeededTopics)) {
+        emit(ControlNotConnectedState());
+      }
+    });
     connectionCubit.messages.listen((data) {
-      if (data.containsKey(AppConstants.linearVelocityTopic)) {
+      if (data.containsKey(AppConstants.robotLastWillTopic)) {
+        if (data[AppConstants.robotLastWillTopic].toString().trim() ==
+            AppConstants.robotLastWillMessage) {
+          emit(ControlNotConnectedState());
+          return;
+        }
+      } else if (data.containsKey(AppConstants.linearVelocityTopic)) {
         linearVelocity = double.parse(data[AppConstants.linearVelocityTopic]);
       } else if (data.containsKey(AppConstants.baseJointAngleTopic)) {
         baseJointActualAngle =
@@ -54,6 +70,7 @@ class ControlCubit extends Cubit<ControlStates> {
       } else if (data.containsKey(AppConstants.odomTopic)) {
         odom = _odomFromJson(data[AppConstants.odomTopic]);
       }
+
       if (!isClosed) {
         emit(ControlConnectedState());
       }

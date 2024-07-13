@@ -33,49 +33,49 @@ class ConnectionScreen extends StatelessWidget {
       },
       builder: (context, state) {
         return Scaffold(
-            floatingActionButton: ((state is ConnectedState) ||
-                    (state is SubscribedState))
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      if (!cubit.subscribedToAllNeededTopics)
-                        FloatingActionButton(
-                          onPressed: () => cubit.addNeededTopics(),
-                          backgroundColor: Colors.deepOrange,
-                          tooltip: 'Subscribe to all needed topics',
-                          elevation: 1,
-                          child: SizedBox(
-                            child: Image.asset(
-                              AppAssets.connectImageAsset,
-                              color: Colors.white,
-                              height: 30,
-                              width: 30,
+          floatingActionButton:
+              ((state is ConnectedState) || (state is SubscribedState))
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (!cubit.subscribedToAllNeededTopics)
+                          FloatingActionButton(
+                            onPressed: () => cubit.addNeededTopics(),
+                            backgroundColor: Colors.deepOrange,
+                            tooltip: 'Subscribe to all needed topics',
+                            elevation: 1,
+                            child: SizedBox(
+                              child: Image.asset(
+                                AppAssets.connectImageAsset,
+                                color: Colors.white,
+                                height: 30,
+                                width: 30,
+                              ),
                             ),
                           ),
+                        if (!cubit.subscribedToAllNeededTopics)
+                          const SizedBox(
+                            width: 5,
+                          ),
+                        FloatingActionButton.extended(
+                          onPressed: () => cubit.addNewTopic(context),
+                          backgroundColor: AppColors.primaryColor,
+                          tooltip: 'Subscribe to topic',
+                          elevation: 1,
+                          label: const Text(
+                            'New topic',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                          icon: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
                         ),
-                      if (!cubit.subscribedToAllNeededTopics)
-                        const SizedBox(
-                          width: 5,
-                        ),
-                      FloatingActionButton.extended(
-                        onPressed: () => cubit.addNewTopic(context),
-                        backgroundColor: AppColors.primaryColor,
-                        tooltip: 'Subscribe to topic',
-                        elevation: 1,
-                        label: const Text(
-                          'New topic',
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
-                        icon: const Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  )
-                : null,
-            body: SingleChildScrollView(
-                child: Padding(
+                      ],
+                    )
+                  : null,
+          body: SingleChildScrollView(
+            child: Padding(
               padding: const EdgeInsets.only(top: 40.0, bottom: 60),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
@@ -98,11 +98,12 @@ class ConnectionScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 30),
                   Lottie.asset(
-                      ((state is ConnectedState) || (state is SubscribedState))
-                          ? AppAssets.readyAnimationAsset
-                          : (state is ConnectingState)
-                              ? AppAssets.connectingAnimationAsset
-                              : AppAssets.hiAnimationAsset),
+                    ((state is ConnectedState) || (state is SubscribedState))
+                        ? AppAssets.readyAnimationAsset
+                        : (state is ConnectingState)
+                            ? AppAssets.connectingAnimationAsset
+                            : AppAssets.hiAnimationAsset,
+                  ),
                   const SizedBox(height: 30),
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 40),
@@ -132,9 +133,7 @@ class ConnectionScreen extends StatelessWidget {
                       keyboardType: TextInputType.number,
                     ),
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
+                  const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () {
                       if (((state is ConnectedState) ||
@@ -147,33 +146,37 @@ class ConnectionScreen extends StatelessWidget {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                        elevation: 3,
-                        backgroundColor: ((state is ConnectedState) ||
-                                (state is SubscribedState) ||
-                                (state is ConnectingState))
-                            ? Colors.red
-                            : null),
-                    child: Text(((state is ConnectedState) ||
-                            (state is SubscribedState))
-                        ? 'Disconnect'
-                        : (state is ConnectingState)
-                            ? 'Stop'
-                            : 'Connect'),
+                      elevation: 3,
+                      backgroundColor: ((state is ConnectedState) ||
+                              (state is SubscribedState) ||
+                              (state is ConnectingState))
+                          ? Colors.red
+                          : null,
+                    ),
+                    child: Text(
+                      ((state is ConnectedState) || (state is SubscribedState))
+                          ? 'Disconnect'
+                          : (state is ConnectingState)
+                              ? 'Stop'
+                              : 'Connect',
+                    ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   if (state is ConnectedState)
                     const ContaineredText(
-                        text: 'No subscribed topics',
-                        color: AppColors.primaryColor,
-                        fontSize: 15)
+                      text: 'No subscribed topics',
+                      color: AppColors.primaryColor,
+                      fontSize: 15,
+                    )
                   else if (state is SubscribedState)
                     SubscribedTopicsList(
-                        subscribedTopics: cubit.subscribedTopics),
+                      subscribedTopics: cubit.subscribedTopics,
+                    ),
                 ],
               ),
-            )));
+            ),
+          ),
+        );
       },
     );
   }

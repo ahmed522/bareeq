@@ -10,6 +10,8 @@ class AppConstants {
       '/app/elbow_joint_angle_command';
   static const String brushCommandTopic = '/app/brush_command';
   static const String joystickTopic = '/app/joystick';
+  static const String robotLastWillTopic = '/robot/lastWill';
+  static const String robotLastWillMessage = 'robot disconnected';
   static const List<String> neededTopics = [
     linearVelocityTopic,
     joystickTopic,
@@ -20,5 +22,6 @@ class AppConstants {
     baseJointAngleTopic,
     elbowJointAngleTopic,
     brushCommandTopic,
+    robotLastWillTopic,
   ];
 }

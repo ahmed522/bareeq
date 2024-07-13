@@ -66,21 +66,32 @@ class ControlScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Row(
-                      children: [
-                        NotifyWidget(
-                          size: 15,
-                          color: Colors.green,
-                          shadowColor: Colors.green.shade400,
-                        ),
-                        const SizedBox(width: 3),
-                        ContaineredText(
-                          text: 'Connected',
-                          color: Colors.green,
-                          fontSize: 15,
-                        ),
-                      ],
-                    )
+                    BlocBuilder<ControlCubit, ControlStates>(
+                        builder: (context, state) {
+                      return Row(
+                        children: [
+                          NotifyWidget(
+                            size: 15,
+                            color: (state is ControlConnectedState)
+                                ? Colors.green
+                                : Colors.red,
+                            shadowColor: (state is ControlConnectedState)
+                                ? Colors.green.shade400
+                                : Colors.red.shade400,
+                          ),
+                          const SizedBox(width: 3),
+                          ContaineredText(
+                            text: (state is ControlConnectedState)
+                                ? 'Connected'
+                                : 'Not Connected',
+                            color: (state is ControlConnectedState)
+                                ? Colors.green
+                                : Colors.red,
+                            fontSize: 15,
+                          ),
+                        ],
+                      );
+                    })
                   ],
                 ),
               ),

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class NotifyWidget extends StatelessWidget {
   const NotifyWidget({
-    Key? key,
+    super.key,
     required this.size,
     required this.color,
     required this.shadowColor,
-  }) : super(key: key);
+  });
   final double size;
   final Color color;
   final Color shadowColor;

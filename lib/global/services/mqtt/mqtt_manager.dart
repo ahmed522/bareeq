@@ -10,7 +10,6 @@ import 'package:uuid/uuid.dart';
 
 import 'mqtt_connection_status.dart';
 
-
 class MQTTManager {
   final ConnectionScreenCubit _cubit;
   MqttConnectionStatus _currentState = MqttConnectionStatus.notConnected;
@@ -19,26 +18,26 @@ class MQTTManager {
   late final String _identifier;
   final String _host;
   final int _port;
-  final StreamController<Map<String,dynamic>> _messagesController = StreamController<Map<String,dynamic>>.broadcast();
+  final StreamController<Map<String, dynamic>> _messagesController =
+      StreamController<Map<String, dynamic>>.broadcast();
   Stream<Map<String, dynamic>> get messages => _messagesController.stream;
   MqttConnectionStatus get state => _currentState;
   List<String> get subscripedTopics => _subscribedTopics;
   MQTTManager(
-      { required ConnectionScreenCubit cubit,
-        required String host,
+      {required ConnectionScreenCubit cubit,
+      required String host,
       required int port})
-      : 
-        _cubit = cubit,
+      : _cubit = cubit,
         _host = host,
         _port = port,
-        _identifier = const Uuid().v4(){
-          initializeMQTTClient();
-        }
+        _identifier = const Uuid().v4() {
+    initializeMQTTClient();
+  }
 
   void initializeMQTTClient() {
-    if(kIsWeb){
+    if (kIsWeb) {
       _client = MqttBrowserClient(_host, _identifier);
-    }else{
+    } else {
       _client = MqttServerClient(_host, _identifier);
     }
 
@@ -52,10 +51,10 @@ class MQTTManager {
     _client!.onUnsubscribed = onUnsubscribed;
     final MqttConnectMessage connMess = MqttConnectMessage()
         .withClientIdentifier(_identifier)
-        .startClean() 
-        .withWillTopic('/lastWill') 
-        .withWillMessage('im dead')
-        .withWillQos(MqttQos.atLeastOnce);
+        .startClean()
+        .withWillTopic('/app/lastWill')
+        .withWillMessage('app disconnected')
+        .withWillQos(MqttQos.exactlyOnce);
     _client!.connectionMessage = connMess;
     _client!.setProtocolV311();
   }
@@ -84,9 +83,11 @@ class MQTTManager {
     builder.addString(message);
     _client!.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
   }
-  void subscribe(String topic,[MqttQos qos = MqttQos.atLeastOnce]) {
-    _client!.subscribe(topic,qos);
+
+  void subscribe(String topic, [MqttQos qos = MqttQos.atLeastOnce]) {
+    _client!.subscribe(topic, qos);
   }
+
   void unSubscribe(String topic) {
     _client!.unsubscribe(topic);
   }
@@ -104,22 +105,24 @@ class MQTTManager {
       _messagesController.add({c[0].topic: payload});
     });
   }
+
   void onUnsubscribed(String? topic) {
     print('EXAMPLE::UnSubscription confirmed for topic $topic');
     _subscribedTopics.remove(topic);
 
-    if(_subscribedTopics.isEmpty){
-      if(_client!.connectionStatus!.state == MqttConnectionState.connected){
+    if (_subscribedTopics.isEmpty) {
+      if (_client!.connectionStatus!.state == MqttConnectionState.connected) {
         _currentState = MqttConnectionStatus.connected;
         _emitState(ConnectedState());
-      }else if(_client!.connectionStatus!.state == MqttConnectionState.connecting){
+      } else if (_client!.connectionStatus!.state ==
+          MqttConnectionState.connecting) {
         _currentState = MqttConnectionStatus.connecting;
         _emitState(ConnectingState());
-      }else{
+      } else {
         _currentState = MqttConnectionStatus.notConnected;
         _emitState(NotConnectedState());
       }
-    }else{
+    } else {
       _emitState(SubscribedState());
     }
   }
@@ -141,10 +144,9 @@ class MQTTManager {
     _emitState(ConnectedState());
 
     print('EXAMPLE::Mosquitto client connected....');
-    
-   
   }
-  _emitState(ConnectionScreenStates state){
-    _cubit.emitState(state); 
+
+  _emitState(ConnectionScreenStates state) {
+    _cubit.emitState(state);
   }
 }
